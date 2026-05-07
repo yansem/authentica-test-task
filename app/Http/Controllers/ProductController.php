@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Products;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -13,7 +13,7 @@ class ProductController extends Controller
      */
     public function index(): LengthAwarePaginator
     {
-        $query = Products::query();
+        $query = Product::query();
 
         return $query->paginate(15)->withQueryString();
     }
