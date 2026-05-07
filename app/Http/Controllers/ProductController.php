@@ -2,20 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
+use App\Http\Requests\ProductIndexRequest;
+use App\Http\Resources\ProductResource;
+use App\Queries\ProductQuery;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(): LengthAwarePaginator
+    public function index(ProductIndexRequest $request, ProductQuery $query): AnonymousResourceCollection
     {
-        $query = Product::query();
+        $data = $request->validated();
 
-        return $query->paginate(15)->withQueryString();
+        $products = $query->index($data)->paginate();
+
+        return ProductResource::collection($products);
     }
 
     /**
