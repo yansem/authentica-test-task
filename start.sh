@@ -13,7 +13,7 @@ fi
 
 php artisan key:generate
 php artisan optimize:clear
-php artisan migrate --force
+php artisan migrate --seed --force
 
 chmod -R 775 storage bootstrap/cache
 
