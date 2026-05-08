@@ -24,9 +24,4 @@ class ProductCacheService
 
         return 'products:index:' . md5(json_encode($filters));
     }
-
-    public function flush(): void
-    {
-        Cache::tags([self::TAG])->flush();
-    }
 }
