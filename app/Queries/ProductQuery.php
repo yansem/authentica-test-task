@@ -23,11 +23,11 @@ class ProductQuery
     {
         return $query
             ->when(
-                isset($filter['category_id']),
+                array_key_exists('category_id', $filter),
                 fn ($q) => $q->where('category_id', $filter['category_id'])
             )
             ->when(
-                isset($filter['name']),
+                array_key_exists('name', $filter),
                 function ($q) use ($filter) {
                     $name = trim($filter['name']);
 
@@ -37,11 +37,11 @@ class ProductQuery
                 }
             )
             ->when(
-                isset($filter['price_min']),
+                array_key_exists('price_min', $filter),
                 fn ($q) => $q->where('price', '>=', $filter['price_min'])
             )
             ->when(
-                isset($filter['price_max']),
+                array_key_exists('price_max', $filter),
                 fn ($q) => $q->where('price', '<=', $filter['price_max'])
             );
     }
