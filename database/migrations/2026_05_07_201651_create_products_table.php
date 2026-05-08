@@ -17,6 +17,9 @@ return new class extends Migration
             $table->unsignedInteger('price');
             $table->foreignId('category_id')->nullable()->constrained();
             $table->timestamps();
+
+            $table->index(['category_id', 'price']);
+            $table->index(['category_id', 'created_at']);
         });
     }
 
