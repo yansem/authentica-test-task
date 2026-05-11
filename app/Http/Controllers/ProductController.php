@@ -7,45 +7,22 @@ use App\Http\Requests\ProductStoreRequest;
 use App\Http\Requests\ProductUpdateRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
-use App\Queries\ProductQuery;
-use App\Services\ProductCacheService;
-use Illuminate\Http\Request;
+use App\Services\ProductService;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(ProductIndexRequest $request, ProductQuery $query, ProductCacheService $cache): AnonymousResourceCollection
+    public function index(ProductIndexRequest $request, ProductService $productService): AnonymousResourceCollection
     {
-        $data = $request->validated();
+        $validated = $request->validated();
 
-        $page = (int) $request->input('page', 1);
-        $perPage = 15;
+        $products = $productService->index($validated);
 
-        $items = $cache->remember($data, function () use ($query, $data) {
-            return $query->index($data)
-                ->get()
-                ->toArray();
-        });
-
-        $collection = collect($items);
-
-        $paginated = new LengthAwarePaginator(
-            $collection->forPage($page, $perPage)->values(),
-            $collection->count(),
-            $perPage,
-            $page,
-            [
-                'path' => request()->url(),
-                'query' => request()->query(),
-            ]
-        );
-
-        return ProductResource::collection($paginated);
+        return ProductResource::collection($products);
     }
 
     /**

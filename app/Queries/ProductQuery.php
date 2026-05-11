@@ -4,23 +4,24 @@ namespace App\Queries;
 
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 
 class ProductQuery
 {
-    public function index(array $data): Builder
+    public function index(array $data): LengthAwarePaginator
     {
         $query = Product::query();
 
-        $filter = $data['filter'] ?? [];
-
-        $query = $this->applyFilters($query, $filter);
-
-        return $this->applySorting($query, $data);
+        return $this->applyIndexFilters($query, $data['filter'])
+            ->orderBy($data['sort_by'], $data['sort_dir'])
+            ->paginate(15);
     }
 
-    private function applyFilters(Builder $query, array $filter): Builder
+    private function applyIndexFilters(Builder $query, ?array $filter): Builder
     {
+        if (is_null($filter)) return $query;
+
         return $query
             ->when(
                 array_key_exists('category_id', $filter),
@@ -44,13 +45,5 @@ class ProductQuery
                 array_key_exists('price_max', $filter),
                 fn ($q) => $q->where('price', '<=', $filter['price_max'])
             );
-    }
-
-    private function applySorting(Builder $query, array $data): Builder
-    {
-        $sortBy = $data['sort_by'] ?? 'created_at';
-        $sortDir = $data['sort_dir'] ?? 'desc';
-
-        return $query->orderBy($sortBy, $sortDir);
     }
 }
