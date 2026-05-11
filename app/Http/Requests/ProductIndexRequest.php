@@ -16,6 +16,16 @@ class ProductIndexRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'filter' => $this->input('filter'),
+            'page' => $this->input('page', '1'),
+            'sort_by' => $this->input('sort_by', 'created_at'),
+            'sort_dir' => $this->input('sort_dir', 'desc'),
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -24,15 +34,17 @@ class ProductIndexRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'page' => ['integer', 'min:1'],
+
             'filter' => ['nullable', 'array'],
 
-            'filter.category_id' => ['nullable', 'integer', 'exists:categories,id'],
-            'filter.price_min' => ['nullable', 'numeric', 'min:0'],
-            'filter.price_max' => ['nullable', 'numeric', 'min:0'],
-            'filter.name' => ['nullable', 'string', 'max:255'],
+            'filter.category_id' => ['nullable', 'integer'],
+            'filter.name' => ['string'],
+            'filter.price_min' => ['numeric', 'min:0'],
+            'filter.price_max' => ['numeric', 'min:0'],
 
-            'sort_by' => ['nullable', Rule::in(['price', 'created_at'])],
-            'sort_dir' => ['nullable', Rule::in(['asc', 'desc'])],
+            'sort_by' => ['in:price,created_at'],
+            'sort_dir' => ['in:asc,desc'],
         ];
     }
 }
