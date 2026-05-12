@@ -2,14 +2,14 @@
 
 namespace App\Services;
 
-use App\Queries\ProductQuery;
+use App\Builders\ProductBuilder;
 use Illuminate\Support\Facades\Cache;
 
 class ProductService
 {
-    protected ProductQuery $productQuery;
+    protected ProductBuilder $productQuery;
 
-    public function __construct(ProductQuery $productQuery)
+    public function __construct(ProductBuilder $productQuery)
     {
         $this->productQuery = $productQuery;
     }

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Queries;
+namespace App\Builders;
 
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 
-class ProductQuery
+class ProductBuilder
 {
     public function index(array $data): LengthAwarePaginator
     {
